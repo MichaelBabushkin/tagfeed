@@ -1,1 +1,6 @@
 Generic single-database configuration.
+
+alembic -c server/alembic.ini current
+alembic -c server/alembic.ini revision --autogenerate -m 0004_migration
+alembic -c server/alembic.ini upgrade head
+alembic -c server/alembic.ini downgrade -1

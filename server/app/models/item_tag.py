@@ -20,5 +20,5 @@ class ItemTag(Base):
         primary_key=True,
     )
     created_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+        TIMESTAMP(timezone=False), nullable=False, server_default=text("now()")
     )

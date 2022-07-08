@@ -6,17 +6,32 @@
     "configurations": [
         {
             "name": "ServerApp",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "module": "app.main",
-            "cwd": "${workspaceRoot}/server"
+            "module": "server.app.main",
+            "cwd": "${workspaceRoot}"
         },
         {
-            "name": "Python: ServerAppTest",
-            "type": "python",
+            "name": "ServerAppTest",
+            "type": "debugpy",
             "request": "launch",
             "module": "pytest",
-            "cwd": "${workspaceRoot}/server"
+            "args": ["server/", "-s"],
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "StorageHandler",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "storage_handler.app.server",
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "StorageHandlerTest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "cwd": "${workspaceRoot}"
         }
     ]
 }

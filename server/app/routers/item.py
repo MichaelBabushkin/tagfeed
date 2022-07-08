@@ -1,12 +1,19 @@
 from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, Form, File
+from typing_extensions import Annotated
 
 from .. import oauth2
 from ..models.user import User
-from ..schemas.item import ItemOut, ItemCreate
+from ..models.restriction_const import ITEM_TEXT_MAX_LEN
+from ..schemas.item import ItemOut
 from ..schemas.tag import TagCreate
 from ..services.tag import not_existing_tags
-from ..services.item import get_items_list, get_an_item, create_new_item
+from ..services.item import (
+    get_items_list,
+    get_an_item,
+    create_new_item,
+    ContentCreationFailed,
+)
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -31,14 +38,23 @@ def get_item(id: int, current_user: User = Depends(oauth2.get_current_user)):
         )
     return item
 
-
 # Create item
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ItemOut)
 def create_item(
-    item: ItemCreate,
-    tags: List[TagCreate] = [],
+    tags: Annotated[List[str] , Form()] = [],
+    text: Annotated[str , Form(max_length=ITEM_TEXT_MAX_LEN)] = None,
+    file: Annotated[UploadFile, File] = None,
     current_user: User = Depends(oauth2.get_current_user),
 ):
+    if file == None and (text in [None, ""]):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"error: An item must have text and/or file",
+        )
+    tags = list(filter(lambda tag: isinstance(tag, str) and tag.strip() != "", tags)) # filter out non strings, strings which are spaces and empty strings 
+    if (tags and len(tags) == 1):
+        tags = [tag.strip() for tag in tags[0].split(',')]
+    tags = [TagCreate(name=name) for name in tags]
     not_existing_tags_list = not_existing_tags(tags, current_user)
     if not_existing_tags_list:
         not_existing_tags_names = [t.name for t in not_existing_tags_list]
@@ -46,4 +62,11 @@ def create_item(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tags {not_existing_tags_names} don't exist",
         )
-    return create_new_item(item, tags, current_user)
+    try:
+        return create_new_item(file, text, tags, current_user)
+    except ContentCreationFailed as e:
+        error = str(e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"error: {error}",
+        )

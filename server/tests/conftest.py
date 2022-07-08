@@ -27,7 +27,6 @@ from app.models.tag import Tag
 from app.models.item import Item
 from app.models.user_tag import UserTag
 from app.models.item_tag import ItemTag
-from app.models.restriction_const import ITEM_CONTENT_MIN_LEN, ITEM_PREVIEW_MAX_LEN
 from app.schemas.item import ItemOut
 from app.schemas.tag import TagOut
 from app.oauth2 import create_access_token
@@ -110,13 +109,7 @@ def authorized_client(client, token):
 def created_item(authorized_client):
     res = authorized_client.post(
         "/items/",
-        json={
-            "item": {
-                "item_type": "STRING",
-                "content": "r" * ITEM_CONTENT_MIN_LEN,
-                "preview": "r" * ITEM_PREVIEW_MAX_LEN,
-            }
-        },
+        data={"text":"A test item"},
     )
     return ItemOut(**res.json())
 
@@ -125,23 +118,11 @@ def created_item(authorized_client):
 def created_items(authorized_client):
     item1 = authorized_client.post(
         "/items/",
-        json={
-            "item": {
-                "item_type": "STRING",
-                "content": "r" * ITEM_CONTENT_MIN_LEN,
-                "preview": "r" * ITEM_PREVIEW_MAX_LEN,
-            }
-        },
+        data={"text":"A test item"},
     )
     item2 = authorized_client.post(
         "/items/",
-        json={
-            "item": {
-                "item_type": "LINK",
-                "content": "L" * ITEM_CONTENT_MIN_LEN,
-                "preview": "L" * ITEM_PREVIEW_MAX_LEN,
-            }
-        },
+        data={"text":"A second test item"},
     )
     return [ItemOut(**item1.json()), ItemOut(**item2.json())]
 

@@ -14,7 +14,7 @@ here is a nice source that explains about PostgreSQL:
 https://www.youtube.com/watch?v=qw--VYLpxG4 watch the relevant parts using the video description
 
 2. Python
-Install python 3.9.2
+Install python 3.12.2
 Create a virtual environment and activate it.
 In the virtual environment, from the server folder, run: "pip install -r requirements.txt"
 If you plan to run a test environment, also run: "pip install -r requirements.test.txt"
@@ -39,10 +39,10 @@ For testing you'll need another file named .env.test.private with the same conte
 It's safer to avoid from defining permanent environment variables on an machine that runs/connects to more than one environment
 
 4. Creatig tables in the db:
-In the virtual environment, from the server folder, run: "alembic upgrade head"
+In the virtual environment, from the root folder, run: "alembic -c server/alembic.ini upgrade head"
 
 5. Activating the server:
-In the virtual environment, from the server folder, run: "uvicorn app.main:app" ot "python main.py"
+In the virtual environment, from the root folder, run: "uvicorn server.app.main:app"
 
 6. server API documentation:
 When the server is active, go to "https://localhost:8000/docs"

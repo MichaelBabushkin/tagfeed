@@ -15,7 +15,7 @@ class TagCreationFailed(Exception):
 
 # Create tag
 def create_new_tag(tag: TagCreate, user: User):
-    new_tag = Tag(user_id=user.id, **tag.dict())
+    new_tag = Tag(user_id=user.id, **tag.model_dump())
     with get_session() as session:
         session.add(new_tag)
         try:

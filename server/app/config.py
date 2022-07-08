@@ -1,30 +1,30 @@
-from pydantic import BaseSettings
-
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class AppSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file='server/.env.app', env_file_encoding='utf-8')
+
     algorithm: str
     access_token_expire_minutes: int
-
-    class Config:
-        env_file = ".env.app"
+    content_pending_expire_minutes: int
 
 
 class PublicSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file='server/.env', env_file_encoding='utf-8')
+
     database_hostname: str
     database_name: str
     database_port: str
+    storage_handler_hostname: str
+    storage_handler_port: str
 
-    class Config:
-        env_file = ".env"
 
 
 class PrivateSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file='server/.env.private', env_file_encoding='utf-8')
+
     database_username: str
     database_password: str
     secret_key: str
-
-    class Config:
-        env_file = ".env.private"
 
 
 app_settings = AppSettings()
@@ -33,10 +33,9 @@ private_settings = PrivateSettings()
 
 
 class Settings(BaseSettings):
-    class Config:
-        extra = "allow"
+    model_config = SettingsConfigDict(extra='allow', env_file_encoding='utf-8')
 
 
 settings = Settings(
-    **{**AppSettings().dict(), **PublicSettings().dict(), **PrivateSettings().dict()}
+    **{**AppSettings().model_dump(), **PublicSettings().model_dump(), **PrivateSettings().model_dump()}
 )

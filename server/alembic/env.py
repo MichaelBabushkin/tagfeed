@@ -4,14 +4,14 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from app.database import Base
-from app.models.user import User
-from app.models.tag import Tag
-from app.models.item import Item
-from app.models.user_tag import UserTag
-from app.models.item_tag import ItemTag
+from server.app.database import Base
+from server.app.models.user import User
+from server.app.models.tag import Tag
+from server.app.models.item import Item
+from server.app.models.user_tag import UserTag
+from server.app.models.item_tag import ItemTag
 
-from app.database import SQLALCHEMY_DATABASE_URL
+from server.app.database import SQLALCHEMY_DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

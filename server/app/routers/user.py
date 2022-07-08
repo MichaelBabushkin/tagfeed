@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
-from pydantic import EmailStr, constr
+from pydantic import EmailStr, StringConstraints
+from typing_extensions import Annotated
 
 from ..schemas.user import UserCreate, UserOut
 from ..services.user import (
@@ -9,7 +10,7 @@ from ..services.user import (
     get_user_by_id,
     UserCreationFailed,
 )
-from app.models.restriction_const import USER_USERNAME_MIN_LEN, USER_USERNAME_MAX_LEN
+from ..models.restriction_const import USER_USERNAME_MIN_LEN, USER_USERNAME_MAX_LEN
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -24,11 +25,11 @@ def check_email_exists(email: EmailStr):
 @router.get("/username_exists", status_code=status.HTTP_404_NOT_FOUND)
 @router.get("/username_exists/{username}", status_code=status.HTTP_200_OK)
 def check_username_exists(
-    username: constr(
-        regex=r"[a-zA-Z0-9]+",
+    username: Annotated[str, StringConstraints(
         min_length=USER_USERNAME_MIN_LEN,
         max_length=USER_USERNAME_MAX_LEN,
-    )
+        pattern=r'^[a-zA-Z0-9]+$')
+    ]
 ):
     return username_exists(username)
 

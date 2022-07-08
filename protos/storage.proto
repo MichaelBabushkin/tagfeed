@@ -1,0 +1,31 @@
+//To recompile this proto:
+//1. make sure grpcio and grpcio-tools are installed.From the root folder
+//2. run: python -m grpc_tools.protoc -I./protos --python_out=./protos --grpc_python_out=./protos ./protos/storage.proto
+//3. in storage_pb2_grpc.py edit line "import storage_pb2 as storage__pb2" to be "import protos.storage_pb2 as storage__pb2"
+
+syntax = "proto3";
+
+service ItemHandler {
+  rpc UploadItem (UploadItem_request) returns (UploadItem_response);
+  rpc DownloadItem (DownloadItem_request) returns (DownloadItem_response);
+}
+
+message UploadItem_request {
+  string uuid = 1;
+  bytes content = 2;
+}
+
+message UploadItem_response {
+  string status = 1;
+}
+
+message DownloadItem_request {
+  string uuid = 1;
+}
+
+message DownloadItem_response {
+  oneof DownloadItem_response_oneof {
+    bytes content = 1;
+    string error = 2;
+  }
+}
