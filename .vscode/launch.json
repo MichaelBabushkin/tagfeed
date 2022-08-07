@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ServerApp",
+            "type": "python",
+            "request": "launch",
+            "module": "app.main",
+            "cwd": "${workspaceRoot}/server"
+        },
+        {
+            "name": "Python: ServerAppTest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "cwd": "${workspaceRoot}/server"
+        }
+    ]
+}
