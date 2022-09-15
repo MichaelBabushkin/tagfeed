@@ -2,7 +2,13 @@ from fastapi import APIRouter, status, HTTPException
 from pydantic import EmailStr, constr
 
 from ..schemas.user import UserCreate, UserOut
-from ..services.user import email_exists, username_exists, create_user, get_user_by_id
+from ..services.user import (
+    email_exists,
+    username_exists,
+    create_user,
+    get_user_by_id,
+    UserCreationFailed,
+)
 from app.models.restriction_const import USER_USERNAME_MIN_LEN, USER_USERNAME_MAX_LEN
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -30,23 +36,12 @@ def check_username_exists(
 # Create user
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserOut)
 def create_new_user(user: UserCreate):
-    if username_exists(user.username):
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"user with with username {user.username} already exists",
-        )
-    if email_exists(user.email):
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=f"user with with email {user.email} already exists",
-        )
     try:
-        new_user = create_user(user)
-    except ValueError as e:
+        return create_user(user)
+    except UserCreationFailed as e:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
         )
-    return new_user
 
 
 @router.get("/{id}", response_model=UserOut)

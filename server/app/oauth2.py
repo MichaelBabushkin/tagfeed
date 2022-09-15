@@ -51,11 +51,11 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        token = verify_access_token(token)
+        token_data = verify_access_token(token)
     except TokenVerificationError:
         raise excep
     with session:
-        user = session.query(User).filter(User.username == token.username).first()
+        user = session.query(User).filter(User.username == token_data.username).first()
     if user is None:
         raise excep
     return user

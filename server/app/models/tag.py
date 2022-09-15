@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.schema import CheckConstraint
+from sqlalchemy.schema import CheckConstraint, UniqueConstraint
 from sqlalchemy.orm import validates
 
 from ..database import Base
@@ -18,6 +18,7 @@ class Tag(Base):
         CheckConstraint(
             f"char_length(name) >= {TAG_NAME_MIN_LEN}", name="name_min_length"
         ),
+        UniqueConstraint("name", "user_id", name="name_user_id_uc"),
     )
 
     @validates("name")

@@ -1,5 +1,8 @@
 import pytest
 
+from .conftest import override_get_session
+from app.models.user import User
+from app.models.tag import Tag
 from app.schemas.user import UserOut
 from app.models.restriction_const import (
     USER_PASSWORD_MIN_LEN,
@@ -37,16 +40,20 @@ def test_create_user(
     assert new_user.username == username
     assert new_user.first_name == first_name
     assert new_user.last_name == last_name
+    with override_get_session() as session:
+        user_id = session.query(User).filter(User.username == username).first().id
+        tag = session.query(Tag).filter(Tag.user_id == user_id).first().name
+    assert tag == username, "Tag wasn't created"
 
 
 @pytest.mark.parametrize(
     "email,             username,                         password,                         first_name,                        last_name,                        status_code", [
-    ("username@ex.ex",  "random",                         "random",                         "random",                          "random",                         409),   # email exists
+    ("username@ex.ex",  "random",                         "random",                         "random",                          "random",                         422),   # email exists
     ("username.ex.ex",  "random",                         "random",                         "random",                          "random",                         422),   # bad email
     (None,              "random",                         "random",                         "random",                          "random",                         422),   # no email
     ("a@a",             "random",                         "random",                         "random",                          "random",                         422),   # short email
     ("a@"+"ab"*32+".c", "random",                         "random",                         "random",                          "random",                         422),   # long email
-    ("username2@ex.ex", "username",                       "random",                         "random",                          "random",                         409),   # username exists
+    ("username2@ex.ex", "username",                       "random",                         "random",                          "random",                         422),   # username exists
     ("random",          None,                             "random",                         "random",                          "random",                         422),   # no username
     ("random",          "r"*(USER_USERNAME_MIN_LEN - 1),  "random",                         "random",                          "random",                         422),   # short username
     ("random",          "r"*(USER_USERNAME_MAX_LEN + 1),  "random",                         "random",                          "random",                         422),   # long username

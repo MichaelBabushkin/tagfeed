@@ -29,12 +29,14 @@ from app.models.user_tag import UserTag
 from app.models.item_tag import ItemTag
 from app.models.restriction_const import ITEM_CONTENT_MIN_LEN, ITEM_PREVIEW_MAX_LEN
 from app.schemas.item import ItemOut
+from app.schemas.tag import TagOut
 from app.oauth2 import create_access_token
 
 
 @pytest.fixture
 def session():
     db = TestingSessionLocal()
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     try:
         yield
@@ -49,6 +51,21 @@ def client(session):
     yield TestClient(app)
 
 
+def create_user(client, user_data):
+    res = client.post("/users/", json=user_data)
+    assert res.status_code == 201
+    new_user = res.json()
+    new_user["password"] = user_data["password"]
+    with override_get_session() as session:
+        new_user["id"] = (
+            session.query(User)
+            .filter(User.username == user_data["username"])
+            .first()
+            .id
+        )
+    return new_user
+
+
 @pytest.fixture
 def test_user(client):
     user_data = {
@@ -58,16 +75,29 @@ def test_user(client):
         "first_name": "Leonid",
         "last_name": "pantaler",
     }
-    res = client.post("/users/", json=user_data)
-    assert res.status_code == 201
-    new_user = res.json()
-    new_user["password"] = user_data["password"]
-    return new_user
+    return create_user(client, user_data)
+
+
+@pytest.fixture
+def test_user2(client):
+    user_data = {
+        "email": "username1@ex.ex",
+        "username": "username1",
+        "password": "password",
+        "first_name": "Leonid1",
+        "last_name": "pantaler1",
+    }
+    return create_user(client, user_data)
 
 
 @pytest.fixture
 def token(test_user):
     return create_access_token({"username": test_user["username"]})
+
+
+@pytest.fixture
+def token2(test_user2):
+    return create_access_token({"username": test_user2["username"]})
 
 
 @pytest.fixture
@@ -108,3 +138,14 @@ def created_items(authorized_client):
         },
     )
     return [ItemOut(**item1.json()), ItemOut(**item2.json())]
+
+
+@pytest.fixture
+def created_tag(authorized_client):
+    res = authorized_client.post(
+        "/tags/",
+        json={
+            "name": "tagush",
+        },
+    )
+    return TagOut(**res.json())

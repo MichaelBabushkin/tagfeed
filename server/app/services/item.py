@@ -24,8 +24,8 @@ def get_an_item(id):
 
 
 # Create item
-def create_new_item(item, current_user):
-    new_item = Item(user_id=current_user.id, **item.dict())
+def create_new_item(item, user):
+    new_item = Item(user_id=user.id, **item.dict())
     with get_session() as session:
         session.add(new_item)
         session.commit()
