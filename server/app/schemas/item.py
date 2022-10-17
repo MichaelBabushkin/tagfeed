@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, constr
 
+from .tag import TagCreate
 from ..models.item import ItemTypes
 from ..models.restriction_const import (
     ITEM_CONTENT_MIN_LEN,
@@ -26,7 +27,6 @@ class ItemCreate(ItemBase):
 class ItemSchema(ItemBase):
     id: int
     created_at: datetime
-    user_id: int
 
     class Config:  # Allows fastapi to work with orm models instead of dicts
         orm_mode = True

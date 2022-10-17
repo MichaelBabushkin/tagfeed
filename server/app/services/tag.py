@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 
@@ -28,3 +30,12 @@ def create_new_tag(tag: TagCreate, user: User):
             raise e
         session.refresh(new_tag)  # Used to add id to new_tag
     return new_tag
+
+
+def not_existing_tags(tags: List[TagCreate], user: User):
+    tags_names = set([t.name for t in tags])
+    with get_session() as session:
+        db_tags = set(session.query(Tag).filter(Tag.user_id == user.id).all())
+        db_tags_names = set([t.name for t in db_tags])
+        not_existing_tags_set = tags_names.difference(db_tags_names)
+    return list(filter(lambda t: t.name in not_existing_tags_set, tags))

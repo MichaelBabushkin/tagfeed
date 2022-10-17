@@ -4,6 +4,7 @@ from psycopg2.errors import UniqueViolation
 from .tag import create_new_tag, TagCreationFailed
 from ..models.user import User
 from ..schemas.tag import TagCreate
+from ..schemas.user import UserCreate
 from .. import utils
 from ..database import get_session
 
@@ -28,7 +29,7 @@ def username_exists(username):
     return True
 
 
-def create_user(user):
+def create_user(user: UserCreate):
     user.password = utils.hash(user.password)
     new_user = User(**user.dict())
     with get_session() as session:

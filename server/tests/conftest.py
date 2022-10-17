@@ -111,9 +111,11 @@ def created_item(authorized_client):
     res = authorized_client.post(
         "/items/",
         json={
-            "item_type": "STRING",
-            "content": "r" * ITEM_CONTENT_MIN_LEN,
-            "preview": "r" * ITEM_PREVIEW_MAX_LEN,
+            "item": {
+                "item_type": "STRING",
+                "content": "r" * ITEM_CONTENT_MIN_LEN,
+                "preview": "r" * ITEM_PREVIEW_MAX_LEN,
+            }
         },
     )
     return ItemOut(**res.json())
@@ -124,17 +126,21 @@ def created_items(authorized_client):
     item1 = authorized_client.post(
         "/items/",
         json={
-            "item_type": "STRING",
-            "content": "r" * ITEM_CONTENT_MIN_LEN,
-            "preview": "r" * ITEM_PREVIEW_MAX_LEN,
+            "item": {
+                "item_type": "STRING",
+                "content": "r" * ITEM_CONTENT_MIN_LEN,
+                "preview": "r" * ITEM_PREVIEW_MAX_LEN,
+            }
         },
     )
     item2 = authorized_client.post(
         "/items/",
         json={
-            "item_type": "LINK",
-            "content": "L" * ITEM_CONTENT_MIN_LEN,
-            "preview": "L" * ITEM_PREVIEW_MAX_LEN,
+            "item": {
+                "item_type": "LINK",
+                "content": "L" * ITEM_CONTENT_MIN_LEN,
+                "preview": "L" * ITEM_PREVIEW_MAX_LEN,
+            }
         },
     )
     return [ItemOut(**item1.json()), ItemOut(**item2.json())]
