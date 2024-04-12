@@ -48,4 +48,4 @@ In the virtual environment, from the root folder, run: "uvicorn server.app.main:
 When the server is active, go to "https://localhost:8000/docs"
 
 7. testing:
-To run the tests, run: "pytest". to add verbosity an disable capture run: "pytest -v -s"
+To run the tests, run: "python -m pytest". to add verbosity an disable capture run: "python -m pytest -v -s"
