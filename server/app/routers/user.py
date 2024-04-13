@@ -48,7 +48,7 @@ def create_new_user(user: UserCreate):
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
         )
 
-
+# Get user
 @router.get("/{id}", response_model=UserOut)
 def get_user(id: int):
     user = get_user_by_id(id)
