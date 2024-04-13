@@ -23,10 +23,6 @@ database.get_session = override_get_session
 from app.main import app
 from app.database import Base
 from app.models.user import User
-from app.models.tag import Tag
-from app.models.item import Item
-from app.models.user_tag import UserTag
-from app.models.item_tag import ItemTag
 from app.schemas.item import ItemOut
 from app.schemas.tag import TagOut
 from app.oauth2 import create_access_token

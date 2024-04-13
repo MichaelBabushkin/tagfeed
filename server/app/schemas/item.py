@@ -31,10 +31,6 @@ class ItemBase(BaseModel):
         return v
 
 
-class ItemCreate(ItemBase):
-    pass
-
-
 class ItemSchema(ItemBase):
     model_config = ConfigDict(from_attributes=True)
 

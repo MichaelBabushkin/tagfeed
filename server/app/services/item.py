@@ -63,7 +63,7 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
         session.flush()
         session.refresh(new_item)
         db_tags = set(session.query(Tag).filter(Tag.user_id == user.id).all())
-        db_tags_dict = {tag.name:tag for tag in db_tags}
+        db_tags_dict = {tag.name: tag for tag in db_tags}
         for tag in tags:
             tag_object = db_tags_dict[tag.name]
             item_tag = ItemTag(item_id=new_item.id, tag_id=tag_object.id)
