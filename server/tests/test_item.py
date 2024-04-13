@@ -70,6 +70,9 @@ class UploadResp:
     ("Describtion for item 1", None, "./server/tests/tagfeed.png", 201),
 ])
 def test_create_item_to_the_storage(test_user, authorized_client, mocker, item_text, tags, file_path, status_code):
+    mock_data = UploadResp("ok")
+    mocker.patch("app.services.item.upload_item", return_value=mock_data)
+
     data = dict()
     file_content = None
     if file_path:
@@ -79,10 +82,6 @@ def test_create_item_to_the_storage(test_user, authorized_client, mocker, item_t
         data['text'] = item_text
     if tags:
         data['tags'] = tags
-    res = authorized_client.post(
-        "/items/",
-        data=data,
-    )
     if file_content:
         res = authorized_client.post(
             "/items/",
@@ -93,7 +92,7 @@ def test_create_item_to_the_storage(test_user, authorized_client, mocker, item_t
         res = authorized_client.post(
             "/items/",
             data=data
-        ) 
+        )
     assert res.status_code == status_code
     new_item = ItemOut(**res.json())
     assert new_item.status == ItemStatus("CREATED")
