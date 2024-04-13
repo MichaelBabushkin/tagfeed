@@ -83,7 +83,6 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
             session.expunge(queried_item)
             session.commit()
         return queried_item
-        raise ContentCreationFailed(upload_result.status)
     with get_session() as session:
         queried_item = session.query(Item).filter_by(id=new_item.id).first()
         queried_item.status = ItemStatus.CREATED
