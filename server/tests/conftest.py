@@ -109,7 +109,7 @@ def authorized_client(client, token):
 def created_item(authorized_client):
     res = authorized_client.post(
         "/items/",
-        data={"text":"A test item"},
+        data={"text": "A test item"},
     )
     return ItemOut(**res.json())
 
@@ -118,11 +118,11 @@ def created_item(authorized_client):
 def created_items(authorized_client):
     item1 = authorized_client.post(
         "/items/",
-        data={"text":"A test item"},
+        data={"text": "A test item"},
     )
     item2 = authorized_client.post(
         "/items/",
-        data={"text":"A second test item"},
+        data={"text": "A second test item"},
     )
     return [ItemOut(**item1.json()), ItemOut(**item2.json())]
 

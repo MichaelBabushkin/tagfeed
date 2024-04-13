@@ -8,9 +8,8 @@ from ..models.restriction_const import (
 
 
 class TagBase(BaseModel):
-    name: Annotated[str, StringConstraints(
-        min_length=TAG_NAME_MIN_LEN,
-        max_length=TAG_NAME_MAX_LEN)
+    name: Annotated[
+        str, StringConstraints(min_length=TAG_NAME_MIN_LEN, max_length=TAG_NAME_MAX_LEN)
     ]  # Required property
 
 

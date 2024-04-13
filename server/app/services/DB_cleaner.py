@@ -30,5 +30,6 @@ def clean(threshohld):
             session.query(Item).filter(Item.id.in_(ids_to_delete)).delete()
             session.commit()
 
+
 if __name__ == "__main__":
     clean(minutes_threshohld)

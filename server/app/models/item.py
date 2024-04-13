@@ -39,6 +39,7 @@ class Item(Base):
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
+
     @staticmethod
     def filename_to_filetype(filename):
         ext = filename.rsplit(".", 1)[-1]

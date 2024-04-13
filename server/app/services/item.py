@@ -12,8 +12,10 @@ from ..schemas.tag import TagCreate
 from ..database import get_session
 from ..storage_handler_utils import upload_item, download_item
 
+
 class ContentCreationFailed(Exception):
     pass
+
 
 # Get items
 def get_items_list(limit, skip):
@@ -40,10 +42,13 @@ def get_an_item(id):
             item.content = res.content
     return item
 
+
 # Create item
 def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: User):
     tags = [TagCreate(name=user.username)] if not tags else tags
-    item_type = ItemTypes.TEXT if file is None else Item.filename_to_filetype(file.filename)
+    item_type = (
+        ItemTypes.TEXT if file is None else Item.filename_to_filetype(file.filename)
+    )
     content_uuid = None if item_type == ItemTypes.TEXT else uuid.uuid4()
     status = ItemStatus.CREATED if item_type == ItemTypes.TEXT else ItemStatus.SAVING
     with get_session() as session:
@@ -67,7 +72,7 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
     if status != ItemStatus.SAVING:
         return new_item
     data = file.file.read()
-    try: # might fail because the service is down or due to internal error of the service
+    try:  # might fail because the service is down or due to internal error of the service
         upload_result = upload_item(str(content_uuid), data)
     except Exception as e:
         upload_result = e
@@ -77,7 +82,7 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
             queried_item = session.query(Item).filter_by(id=new_item.id).first()
             queried_item.status = ItemStatus.FAILED
             queried_item.content_uuid = None
-            session.query(ItemTag).filter(ItemTag.item_id==new_item.id).delete()
+            session.query(ItemTag).filter(ItemTag.item_id == new_item.id).delete()
             session.flush()
             session.refresh(queried_item)
             session.expunge(queried_item)
@@ -91,4 +96,3 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
         session.expunge(queried_item)
         session.commit()
     return queried_item
-

@@ -17,6 +17,7 @@ from ..services.item import (
 
 router = APIRouter(prefix="/items", tags=["items"])
 
+
 # Get items
 @router.get("/", response_model=List[ItemOut])
 def get_items(
@@ -38,11 +39,12 @@ def get_item(id: int, current_user: User = Depends(oauth2.get_current_user)):
         )
     return item
 
+
 # Create item
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ItemOut)
 def create_item(
-    tags: Annotated[List[str] , Form()] = [],
-    text: Annotated[str , Form(max_length=ITEM_TEXT_MAX_LEN)] = None,
+    tags: Annotated[List[str], Form()] = [],
+    text: Annotated[str, Form(max_length=ITEM_TEXT_MAX_LEN)] = None,
     file: Annotated[UploadFile, File] = None,
     current_user: User = Depends(oauth2.get_current_user),
 ):
@@ -51,9 +53,11 @@ def create_item(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"error: An item must have text and/or file",
         )
-    tags = list(filter(lambda tag: isinstance(tag, str) and tag.strip() != "", tags)) # filter out non strings, strings which are spaces and empty strings 
-    if (tags and len(tags) == 1):
-        tags = [tag.strip() for tag in tags[0].split(',')]
+    tags = list(
+        filter(lambda tag: isinstance(tag, str) and tag.strip() != "", tags)
+    )  # filter out non strings, strings which are spaces and empty strings
+    if tags and len(tags) == 1:
+        tags = [tag.strip() for tag in tags[0].split(",")]
     tags = [TagCreate(name=name) for name in tags]
     not_existing_tags_list = not_existing_tags(tags, current_user)
     if not_existing_tags_list:

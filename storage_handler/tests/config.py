@@ -11,4 +11,5 @@ public_settings = PublicSettings()
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="allow")
 
+
 settings = Settings(**{**AppSettings().model_dump(), **PublicSettings().model_dump()})

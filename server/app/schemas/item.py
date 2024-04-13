@@ -9,9 +9,11 @@ from ..models.restriction_const import (
     ITEM_TEXT_MIN_LEN,
 )
 
+
 class ItemBase(BaseModel):
     item_text: Optional[str]  #  Optional property
     item_type: ItemTypes
+
     @field_validator("item_type")
     def content_length_validator(cls, v, info: ValidationInfo):
         if v is ItemTypes.TEXT:

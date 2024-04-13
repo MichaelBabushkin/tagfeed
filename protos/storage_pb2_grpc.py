@@ -15,15 +15,15 @@ class ItemHandlerStub(object):
             channel: A grpc.Channel.
         """
         self.UploadItem = channel.unary_unary(
-                '/ItemHandler/UploadItem',
-                request_serializer=protos_dot_storage__pb2.UploadItem_request.SerializeToString,
-                response_deserializer=protos_dot_storage__pb2.UploadItem_response.FromString,
-                )
+            "/ItemHandler/UploadItem",
+            request_serializer=protos_dot_storage__pb2.UploadItem_request.SerializeToString,
+            response_deserializer=protos_dot_storage__pb2.UploadItem_response.FromString,
+        )
         self.DownloadItem = channel.unary_unary(
-                '/ItemHandler/DownloadItem',
-                request_serializer=protos_dot_storage__pb2.DownloadItem_request.SerializeToString,
-                response_deserializer=protos_dot_storage__pb2.DownloadItem_response.FromString,
-                )
+            "/ItemHandler/DownloadItem",
+            request_serializer=protos_dot_storage__pb2.DownloadItem_request.SerializeToString,
+            response_deserializer=protos_dot_storage__pb2.DownloadItem_response.FromString,
+        )
 
 
 class ItemHandlerServicer(object):
@@ -32,68 +32,93 @@ class ItemHandlerServicer(object):
     def UploadItem(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def DownloadItem(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
 
 def add_ItemHandlerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'UploadItem': grpc.unary_unary_rpc_method_handler(
-                    servicer.UploadItem,
-                    request_deserializer=protos_dot_storage__pb2.UploadItem_request.FromString,
-                    response_serializer=protos_dot_storage__pb2.UploadItem_response.SerializeToString,
-            ),
-            'DownloadItem': grpc.unary_unary_rpc_method_handler(
-                    servicer.DownloadItem,
-                    request_deserializer=protos_dot_storage__pb2.DownloadItem_request.FromString,
-                    response_serializer=protos_dot_storage__pb2.DownloadItem_response.SerializeToString,
-            ),
+        "UploadItem": grpc.unary_unary_rpc_method_handler(
+            servicer.UploadItem,
+            request_deserializer=protos_dot_storage__pb2.UploadItem_request.FromString,
+            response_serializer=protos_dot_storage__pb2.UploadItem_response.SerializeToString,
+        ),
+        "DownloadItem": grpc.unary_unary_rpc_method_handler(
+            servicer.DownloadItem,
+            request_deserializer=protos_dot_storage__pb2.DownloadItem_request.FromString,
+            response_serializer=protos_dot_storage__pb2.DownloadItem_response.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ItemHandler', rpc_method_handlers)
+        "ItemHandler", rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class ItemHandler(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def UploadItem(request,
+    def UploadItem(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ItemHandler/UploadItem',
+            "/ItemHandler/UploadItem",
             protos_dot_storage__pb2.UploadItem_request.SerializeToString,
             protos_dot_storage__pb2.UploadItem_response.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def DownloadItem(request,
+    def DownloadItem(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ItemHandler/DownloadItem',
+            "/ItemHandler/DownloadItem",
             protos_dot_storage__pb2.DownloadItem_request.SerializeToString,
             protos_dot_storage__pb2.DownloadItem_response.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )

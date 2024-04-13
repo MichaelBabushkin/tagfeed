@@ -25,14 +25,14 @@ def create_tag(authorized_client, test_user, name, status_code):
 
 
 @pytest.mark.parametrize(
-    "name,                       status_code", [
-    ("traveling",                201),
-    ("r"*(TAG_NAME_MAX_LEN + 1), 422),
-    ("r"*(TAG_NAME_MIN_LEN - 1), 422),
-])
-def test_create_tag(
-    authorized_client, test_user, name, status_code
-):
+    "name,                       status_code",
+    [
+        ("traveling", 201),
+        ("r" * (TAG_NAME_MAX_LEN + 1), 422),
+        ("r" * (TAG_NAME_MIN_LEN - 1), 422),
+    ],
+)
+def test_create_tag(authorized_client, test_user, name, status_code):
     create_tag(authorized_client, test_user, name, status_code)
 
 

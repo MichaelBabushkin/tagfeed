@@ -14,6 +14,7 @@ from ..models.restriction_const import USER_USERNAME_MIN_LEN, USER_USERNAME_MAX_
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+
 # Check free email while creating
 @router.get("/email_exists", status_code=status.HTTP_404_NOT_FOUND)
 @router.get("/email_exists/{email}", status_code=status.HTTP_200_OK)
@@ -25,10 +26,13 @@ def check_email_exists(email: EmailStr):
 @router.get("/username_exists", status_code=status.HTTP_404_NOT_FOUND)
 @router.get("/username_exists/{username}", status_code=status.HTTP_200_OK)
 def check_username_exists(
-    username: Annotated[str, StringConstraints(
-        min_length=USER_USERNAME_MIN_LEN,
-        max_length=USER_USERNAME_MAX_LEN,
-        pattern=r'^[a-zA-Z0-9]+$')
+    username: Annotated[
+        str,
+        StringConstraints(
+            min_length=USER_USERNAME_MIN_LEN,
+            max_length=USER_USERNAME_MAX_LEN,
+            pattern=r"^[a-zA-Z0-9]+$",
+        ),
     ]
 ):
     return username_exists(username)
