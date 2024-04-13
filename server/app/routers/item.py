@@ -12,7 +12,6 @@ from ..services.item import (
     get_items_list,
     get_an_item,
     create_new_item,
-    ContentCreationFailed,
 )
 
 router = APIRouter(prefix="/items", tags=["items"])
@@ -66,11 +65,4 @@ def create_item(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tags {not_existing_tags_names} don't exist",
         )
-    try:
-        return create_new_item(file, text, tags, current_user)
-    except ContentCreationFailed as e:
-        error = str(e)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"error: {error}",
-        )
+    return create_new_item(file, text, tags, current_user)

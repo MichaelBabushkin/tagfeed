@@ -13,10 +13,6 @@ from ..database import get_session
 from ..storage_handler_utils import upload_item, download_item
 
 
-class ContentCreationFailed(Exception):
-    pass
-
-
 # Get items
 def get_items_list(limit, skip):
     with get_session() as session:
