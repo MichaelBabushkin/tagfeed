@@ -20,5 +20,5 @@ class UserTag(Base):
         primary_key=True,
     )
     created_at = Column(
-        TIMESTAMP(timezone=False), nullable=False, server_default=text("now()")
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )

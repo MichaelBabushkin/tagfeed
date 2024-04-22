@@ -34,7 +34,7 @@ class Item(Base):
     content_uuid = Column(UUID(as_uuid=True), nullable=True)
     preview_uuid = Column(UUID(as_uuid=True), nullable=True)
     created_at = Column(
-        TIMESTAMP(timezone=False), nullable=False, server_default=text("now()")
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False

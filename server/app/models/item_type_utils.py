@@ -1,1 +1,1 @@
-image_extensions = ["PNG", "JPEG", "TIFF", "BMP", "GIF"]
+image_extensions = ["PNG", "JPEG", "JPG", "TIFF", "BMP", "GIF", "SVG"]

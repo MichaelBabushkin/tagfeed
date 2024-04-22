@@ -31,7 +31,7 @@ class User(Base):
     last_name = Column("last_name", String(USER_LAST_NAME_MAX_LEN), nullable=False)
     created_at = Column(
         "created_at",
-        TIMESTAMP(timezone=False),
+        TIMESTAMP(timezone=True),
         nullable=False,
         server_default=text("now()"),
     )
