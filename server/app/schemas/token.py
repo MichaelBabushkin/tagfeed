@@ -1,5 +1,5 @@
-from pydantic import BaseModel, constr
-from typing import Optional
+from pydantic import BaseModel, StringConstraints
+from typing_extensions import Annotated, Optional
 
 from .restriction_const import (
     ACCESS_TOKEN_MIN_LEN,
@@ -10,10 +10,16 @@ from .restriction_const import (
 
 
 class Token(BaseModel):
-    access_token: constr(
-        min_length=ACCESS_TOKEN_MIN_LEN, max_length=ACCESS_TOKEN_MAX_LEN
-    )
-    token_type: constr(min_length=TOKEN_TYPE_MIN_LEN, max_length=TOKEN_TYPE_MAX_LEN)
+    access_token: Annotated[
+        str,
+        StringConstraints(
+            min_length=ACCESS_TOKEN_MIN_LEN, max_length=ACCESS_TOKEN_MAX_LEN
+        ),
+    ]  # Required property
+    token_type: Annotated[
+        str,
+        StringConstraints(min_length=TOKEN_TYPE_MIN_LEN, max_length=TOKEN_TYPE_MAX_LEN),
+    ]  # Required property
 
 
 class TokenData(BaseModel):

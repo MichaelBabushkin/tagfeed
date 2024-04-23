@@ -7,6 +7,7 @@ from ..services.tag import create_new_tag, TagCreationFailed
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 
+
 # Create tag
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=TagOut)
 def create_tag(tag: TagCreate, current_user: User = Depends(oauth2.get_current_user)):

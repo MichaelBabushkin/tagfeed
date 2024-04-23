@@ -1,4 +1,4 @@
-from .. import utils, oauth2
+from .. import crypto_utils, oauth2
 from ..models.user import User
 from ..database import get_session
 
@@ -12,7 +12,7 @@ def login_user(user_credentials):
         )
     if not user:
         return
-    if not utils.verify(user_credentials.password, user.password):
+    if not crypto_utils.verify(user_credentials.password, user.password):
         return
     access_token = oauth2.create_access_token(data={"username": user.username})
     return {"access_token": access_token, "token_type": "bearer"}

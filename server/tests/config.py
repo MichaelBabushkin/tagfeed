@@ -1,9 +1,9 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config import AppSettings, PublicSettings, PrivateSettings
 
-PublicSettings.Config.env_file = ".env.test"
-PrivateSettings.Config.env_file = ".env.private.test"
+PublicSettings.model_config["env_file"] = "server/.env.test"
+PrivateSettings.model_config["env_file"] = "server/.env.private.test"
 
 app_settings = AppSettings()
 public_settings = PublicSettings()
@@ -11,10 +11,13 @@ private_settings = PrivateSettings()
 
 
 class Settings(BaseSettings):
-    class Config:
-        extra = "allow"
+    model_config = SettingsConfigDict(extra="allow", env_file_encoding="utf-8")
 
 
 settings = Settings(
-    **{**AppSettings().dict(), **PublicSettings().dict(), **PrivateSettings().dict()}
+    **{
+        **AppSettings().model_dump(),
+        **PublicSettings().model_dump(),
+        **PrivateSettings().model_dump(),
+    }
 )
