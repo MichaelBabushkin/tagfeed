@@ -1,0 +1,2 @@
+STORAGE_HANDLER_PORT=9999
+APP_FOLDER=storage_handler

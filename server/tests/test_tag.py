@@ -25,14 +25,14 @@ def create_tag(authorized_client, test_user, name, status_code):
 
 
 @pytest.mark.parametrize(
-    "name,                       status_code", [
-    ("traveling",                201),
-    ("r"*(TAG_NAME_MAX_LEN + 1), 422),
-    ("r"*(TAG_NAME_MIN_LEN - 1), 422),
-])
-def test_create_tag(
-    authorized_client, test_user, name, status_code
-):
+    "name,                       status_code",
+    [
+        ("traveling", 201),
+        ("r" * (TAG_NAME_MAX_LEN + 1), 422),
+        ("r" * (TAG_NAME_MIN_LEN - 1), 422),
+    ],
+)
+def test_create_tag(authorized_client, test_user, name, status_code):
     create_tag(authorized_client, test_user, name, status_code)
 
 
@@ -67,13 +67,13 @@ def test_create_tag_with_same_name(client, token, token2):
             },
         )
 
-    for token in tokens:
-        client.headers = {**client.headers, "Authorization": f"Bearer {token}"}
+    for _token in tokens:
+        client.headers["Authorization"] = f"Bearer {_token}"
         res = send()
         assert res.status_code == 201, "Could not create tag"
         new_tag = TagOut(**res.json())
         assert new_tag.name == name, "Tag's name isn't correct"
-        token_data = verify_access_token(token)
+        token_data = verify_access_token(_token)
         with override_get_session() as session:
             uid = (
                 session.query(User)

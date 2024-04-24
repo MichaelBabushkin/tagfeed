@@ -21,6 +21,7 @@ app.include_router(auth.router)
 app.include_router(item.router)
 app.include_router(tag.router)
 
+
 # Example path / route
 @app.get("/")
 async def root():

@@ -1,35 +1,43 @@
 from datetime import datetime
 from typing import Optional
+from pydantic import validator
 
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, ConfigDict
 
-from .tag import TagCreate
-from ..models.item import ItemTypes
+from ..models.item import ItemTypes, ItemStatus
 from ..models.restriction_const import (
-    ITEM_CONTENT_MIN_LEN,
-    ITEM_CONTENT_MAX_LEN,
-    ITEM_PREVIEW_MAX_LEN,
+    ITEM_TEXT_MAX_LEN,
+    ITEM_TEXT_MIN_LEN,
 )
 
 
 class ItemBase(BaseModel):
-    item_type: ItemTypes  # Required property
-    content: constr(
-        min_length=ITEM_CONTENT_MIN_LEN, max_length=ITEM_CONTENT_MAX_LEN
-    )  # Required property
-    preview: Optional[constr(max_length=ITEM_PREVIEW_MAX_LEN)]  #  Optional property
+    item_text: Optional[str]  #  Optional property
+    item_type: ItemTypes
 
-
-class ItemCreate(ItemBase):
-    pass
+    @validator("item_text", pre=True, always=True)
+    def check_text_length(cls, v, values, **kwargs):
+        if values.get("item_type") == ItemTypes.TEXT:
+            if v is None:
+                raise ValueError("item_text is required for item type TEXT")
+            if len(v) < ITEM_TEXT_MIN_LEN:
+                raise ValueError(
+                    "Text can't be shorter than {ITEM_TEXT_MIN_LEN} characters"
+                )
+            if len(v) > ITEM_TEXT_MAX_LEN:
+                raise ValueError(
+                    "Text can't be longer than {ITEM_TEXT_MAX_LEN} characters"
+                )
+        return v
 
 
 class ItemSchema(ItemBase):
-    id: int
-    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:  # Allows fastapi to work with orm models instead of dicts
-        orm_mode = True
+    id: int
+    item_type: ItemTypes
+    created_at: datetime
+    status: ItemStatus
 
 
 # response

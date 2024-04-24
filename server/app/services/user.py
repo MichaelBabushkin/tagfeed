@@ -5,7 +5,7 @@ from .tag import create_new_tag, TagCreationFailed
 from ..models.user import User
 from ..schemas.tag import TagCreate
 from ..schemas.user import UserCreate
-from .. import utils
+from .. import crypto_utils
 from ..database import get_session
 
 
@@ -30,8 +30,8 @@ def username_exists(username):
 
 
 def create_user(user: UserCreate):
-    user.password = utils.hash(user.password)
-    new_user = User(**user.dict())
+    user.password = crypto_utils.hash(user.password)
+    new_user = User(**user.model_dump())
     with get_session() as session:
         session.add(new_user)
         try:

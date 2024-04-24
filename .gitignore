@@ -106,6 +106,8 @@ celerybeat.pid
 .env.private.test
 .venv
 env/
+env1/
+env_storage/
 venv/
 ENV/
 env.bak/
@@ -130,5 +132,10 @@ dmypy.json
 .pyre/
 .idea
 
+
 #Frontend
 webapp/node_modules
+
+data/
+scripts/
+

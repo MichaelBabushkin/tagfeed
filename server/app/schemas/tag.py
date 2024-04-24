@@ -1,4 +1,5 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, ConfigDict, StringConstraints
+from typing_extensions import Annotated
 
 from ..models.restriction_const import (
     TAG_NAME_MIN_LEN,
@@ -7,9 +8,9 @@ from ..models.restriction_const import (
 
 
 class TagBase(BaseModel):
-    name: constr(
-        min_length=TAG_NAME_MIN_LEN, max_length=TAG_NAME_MAX_LEN
-    )  # Required property
+    name: Annotated[
+        str, StringConstraints(min_length=TAG_NAME_MIN_LEN, max_length=TAG_NAME_MAX_LEN)
+    ]  # Required property
 
 
 class TagCreate(TagBase):
@@ -17,11 +18,10 @@ class TagCreate(TagBase):
 
 
 class TagSchema(TagBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     user_id: int
-
-    class Config:  # Allows fastapi to work with orm models instead of dicts
-        orm_mode = True
 
 
 # response
