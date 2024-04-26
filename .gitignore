@@ -132,5 +132,10 @@ dmypy.json
 .pyre/
 .idea
 
+
+#Frontend
+webapp/node_modules
+
 data/
 scripts/
+
