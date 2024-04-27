@@ -11,28 +11,19 @@ class AppSettings(BaseSettings):
     content_pending_expire_minutes: int
 
 
-class PublicSettings(BaseSettings):
+class PrivateSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file="server/.env", env_file_encoding="utf-8")
 
+    secret_key: str
     database_hostname: str
     database_name: str
     database_port: str
+    database_username: str
+    database_password: str
     storage_handler_hostname: str
     storage_handler_port: str
 
-
-class PrivateSettings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file="server/.env.private", env_file_encoding="utf-8"
-    )
-
-    database_username: str
-    database_password: str
-    secret_key: str
-
-
 app_settings = AppSettings()
-public_settings = PublicSettings()
 private_settings = PrivateSettings()
 
 
@@ -43,7 +34,6 @@ class Settings(BaseSettings):
 settings = Settings(
     **{
         **AppSettings().model_dump(),
-        **PublicSettings().model_dump(),
         **PrivateSettings().model_dump(),
     }
 )

@@ -1,12 +1,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.config import AppSettings, PublicSettings, PrivateSettings
+from app.config import AppSettings, PrivateSettings
 
-PublicSettings.model_config["env_file"] = "server/.env.test"
-PrivateSettings.model_config["env_file"] = "server/.env.private.test"
+PrivateSettings.model_config["env_file"] = "server/.env.test"
 
 app_settings = AppSettings()
-public_settings = PublicSettings()
 private_settings = PrivateSettings()
 
 
@@ -17,7 +15,6 @@ class Settings(BaseSettings):
 settings = Settings(
     **{
         **AppSettings().model_dump(),
-        **PublicSettings().model_dump(),
         **PrivateSettings().model_dump(),
     }
 )
