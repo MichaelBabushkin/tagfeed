@@ -26,12 +26,19 @@ The following is an example of a .env file:
 **start of example file**
 
 SECRET_KEY=secret
+
 DATABASE_HOSTNAME=localhost
+
 DATABASE_PORT=5432
+
 DATABASE_NAME=tagfeed
+
 DATABASE_USERNAME=postgres
+
 DATABASE_PASSWORD=1234
+
 STORAGE_HANDLER_HOSTNAME=localhost
+
 STORAGE_HANDLER_PORT=9999
 
 **end of example file**
