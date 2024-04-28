@@ -20,22 +20,32 @@ In the virtual environment, from the server folder, run: "pip install -r require
 If you plan to run a test environment, also run: "pip install -r requirements.test.txt"
 
 3. Credentials:
-Create a ".env.private" file in the server folder.
-The following is an example of a .env.private file:
+Create a ".env" file in the server folder.
+The following is an example of a .env file:
 
 **start of example file**
 
-DATABASE_PASSWORD=1234
+SECRET_KEY=secret
+
+DATABASE_HOSTNAME=localhost
+
+DATABASE_PORT=5432
+
+DATABASE_NAME=tagfeed
 
 DATABASE_USERNAME=postgres
 
-SECRET_KEY=secret
+DATABASE_PASSWORD=1234
+
+STORAGE_HANDLER_HOSTNAME=localhost
+
+STORAGE_HANDLER_PORT=9999
 
 **end of example file**
 
 The DATABASE values should match the DB you created.
 
-For testing you'll need another file named .env.test.private with the same content only for the test db
+For testing you'll need another file named .env.test with the same content only for the test db
 It's safer to avoid from defining permanent environment variables on an machine that runs/connects to more than one environment
 
 4. Creatig tables in the db:
