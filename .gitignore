@@ -135,6 +135,7 @@ dmypy.json
 
 #Frontend
 webapp/node_modules
+webapp/package-lock.json
 
 data/
 scripts/
