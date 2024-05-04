@@ -144,9 +144,7 @@ def test_get_item_by_id_unauth(client):
     res = client.get(f"/items/1")
     assert res.status_code == 401
 
-
-def test_get_items(authorized_client, created_items):
-    res = authorized_client.get("/items/")
+def check_items(res, created_items):
     assert res.status_code == 200, "Couldn't get item"
     items_list = res.json()
     assert len(items_list) == len(created_items), "number of items doesn't match"
@@ -157,7 +155,24 @@ def test_get_items(authorized_client, created_items):
         assert item["item_text"] == created_item.item_text
         assert item["item_type"] == "TEXT"
 
+def test_get_items(authorized_client, created_items):
+    res = authorized_client.get("/items/")
+    check_items(res, created_items)
+
 
 def test_get_items_unauth(client):
     res = client.get(f"/items/")
     assert res.status_code == 401
+
+def test_get_only_items_created_by_the_user(authorized_client, created_items, authorized_client2, created_items2):
+    res1 = authorized_client.get(f"/items/")
+    check_items(res1, created_items)
+
+    res2 = authorized_client2.get(f"/items/")
+    check_items(res2, created_items2)
+
+def test_get_item_created_by_another_user(created_item, authorized_client2):
+    res = authorized_client2.get(f"/items/{created_item.id}")
+    json_res = res.json()
+    assert res.status_code == 404, "This item shouldn't be available for this user"
+    assert json_res['detail'] == f"item with id {created_item.id} doesn't exists", "The response is different from expected"
