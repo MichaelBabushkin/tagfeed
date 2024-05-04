@@ -24,13 +24,13 @@ def get_items(
     limit: int = 10,
     skip: int = 0,
 ):
-    return get_items_list(limit, skip)
+    return get_items_list(current_user, limit, skip)
 
 
 # Get item
 @router.get("/{id}", response_model=ItemOut)
 def get_item(id: int, current_user: User = Depends(oauth2.get_current_user)):
-    item = get_an_item(id)
+    item = get_an_item(current_user, id)
     if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

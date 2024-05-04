@@ -14,10 +14,11 @@ from ..storage_handler_utils import upload_item, download_item
 
 
 # Get items
-def get_items_list(limit, skip):
+def get_items_list(user: User, limit: int, skip: int):
     with get_session() as session:
         items = (
             session.query(Item)
+            .filter_by(user_id=user.id)
             .order_by(desc(Item.created_at))
             .limit(limit)
             .offset(skip)
@@ -27,9 +28,11 @@ def get_items_list(limit, skip):
 
 
 # Get item
-def get_an_item(id):
+def get_an_item(user: User, id: int):
     with get_session() as session:
-        item = session.query(Item).filter(Item.id == id).first()
+        item = (
+            session.query(Item).filter(Item.user_id == user.id, Item.id == id).first()
+        )
         if item and item.content_uuid and item.status != ItemStatus.FAILED:
             res = download_item(str(item.content_uuid))
             if res.error:
