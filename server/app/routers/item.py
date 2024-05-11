@@ -5,9 +5,10 @@ from typing_extensions import Annotated
 from .. import oauth2
 from ..models.user import User
 from ..models.restriction_const import ITEM_TEXT_MAX_LEN
-from ..schemas.item import ItemOut
+from ..schemas.item import ItemOut, ItemStatus
 from ..schemas.tag import TagCreate
-from ..services.tag import not_existing_tags
+from ..services.tag import create_tags
+from ..services.item_tag import create_item_items_tags
 from ..services.item import (
     get_items_list,
     get_an_item,
@@ -57,12 +58,9 @@ def create_item(
     )  # filter out non strings, strings which are spaces and empty strings
     if tags and len(tags) == 1:
         tags = [tag.strip() for tag in tags[0].split(",")]
-    tags = [TagCreate(name=name) for name in tags]
-    not_existing_tags_list = not_existing_tags(tags, current_user)
-    if not_existing_tags_list:
-        not_existing_tags_names = [t.name for t in not_existing_tags_list]
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Tags {not_existing_tags_names} don't exist",
-        )
-    return create_new_item(file, text, tags, current_user)
+    tags = [TagCreate(name=name) for name in set(tags)]
+    new_item = create_new_item(file, text, tags, current_user)
+    if new_item.status == ItemStatus.CREATED:
+        create_tags(tags, current_user)
+        create_item_items_tags(new_item.id, tags, current_user)
+    return new_item
