@@ -23,6 +23,7 @@ class PrivateSettings(BaseSettings):
     storage_handler_hostname: str
     storage_handler_port: str
 
+
 app_settings = AppSettings()
 private_settings = PrivateSettings()
 

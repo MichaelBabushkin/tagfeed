@@ -97,8 +97,20 @@ def token2(test_user2):
 
 @pytest.fixture
 def authorized_client(client, token):
-    client.headers = {**client.headers, "Authorization": f"Bearer {token}"}
-    return client
+    new_client = TestClient(app)
+    headers = client.headers.copy()
+    headers["Authorization"] = f"Bearer {token}"
+    new_client.headers = headers
+    return new_client
+
+
+@pytest.fixture
+def authorized_client2(client, token2):
+    new_client = TestClient(app)
+    headers = client.headers.copy()
+    headers["Authorization"] = f"Bearer {token2}"
+    new_client.headers = headers
+    return new_client
 
 
 @pytest.fixture
@@ -121,6 +133,15 @@ def created_items(authorized_client):
         data={"text": "A second test item"},
     )
     return [ItemOut(**item1.json()), ItemOut(**item2.json())]
+
+
+@pytest.fixture
+def created_items2(authorized_client2):
+    item1 = authorized_client2.post(
+        "/items/",
+        data={"text": "A test item created by authorized_client2"},
+    )
+    return [ItemOut(**item1.json())]
 
 
 @pytest.fixture
