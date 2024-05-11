@@ -64,15 +64,37 @@ class UploadResp:
 
 
 @pytest.mark.parametrize(
-    "item_text,                tags, file_path,                    status_code",
+    "item_text, tags, file_path, upload_resp, item_status, status_code",
     [
-        ("Describtion for item 1", None, "./server/tests/tagfeed.png", 201),
+        (
+            "Describtion for item 1",
+            None,
+            "./server/tests/tagfeed.png",
+            "ok",
+            "CREATED",
+            201,
+        ),
+        (
+            "Describtion for item 1",
+            None,
+            "./server/tests/tagfeed.png",
+            "error",
+            "FAILED",
+            201,
+        ),
     ],
 )
 def test_create_item_to_the_storage(
-    test_user, authorized_client, mocker, item_text, tags, file_path, status_code
+    authorized_client,
+    mocker,
+    item_text,
+    tags,
+    file_path,
+    upload_resp,
+    item_status,
+    status_code,
 ):
-    mock_data = UploadResp("ok")
+    mock_data = UploadResp(upload_resp)
     mocker.patch("app.services.item.upload_item", return_value=mock_data)
 
     data = dict()
@@ -90,7 +112,7 @@ def test_create_item_to_the_storage(
         res = authorized_client.post("/items/", data=data)
     assert res.status_code == status_code
     new_item = ItemOut(**res.json())
-    assert new_item.status == ItemStatus("CREATED")
+    assert new_item.status == ItemStatus(item_status)
     assert new_item.item_text == item_text
 
 
