@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, StringConstraints
+from pydantic import BaseModel, ConfigDict, EmailStr, StringConstraints, validator
 from typing_extensions import Annotated
 
 from ..models.restriction_const import (
@@ -33,6 +33,14 @@ class UserBase(BaseModel):
             min_length=USER_LAST_NAME_MIN_LEN, max_length=USER_LAST_NAME_MAX_LEN
         ),
     ]
+
+    @validator("username")
+    def username_alphanumeric_or_underscore(cls, v):
+        if not v.replace("_", "").isalnum():
+            raise ValueError(
+                "Username must contain only letters, numbers, and underscores."
+            )
+        return v
 
 
 class UserCreate(UserBase):
