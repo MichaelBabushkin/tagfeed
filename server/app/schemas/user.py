@@ -33,10 +33,13 @@ class UserBase(BaseModel):
             min_length=USER_LAST_NAME_MIN_LEN, max_length=USER_LAST_NAME_MAX_LEN
         ),
     ]
-    @validator('username')
+
+    @validator("username")
     def username_alphanumeric_or_underscore(cls, v):
-        if not v.replace('_', '').isalnum():
-            raise ValueError('Username must contain only letters, numbers, and underscores.')
+        if not v.replace("_", "").isalnum():
+            raise ValueError(
+                "Username must contain only letters, numbers, and underscores."
+            )
         return v
 
 

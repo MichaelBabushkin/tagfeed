@@ -8,7 +8,7 @@ from app.schemas.token import Token
 @pytest.mark.parametrize(
     "username, password",
     [
-        ("username", "password"), # login by username
+        ("username", "password"),  # login by username
         ("username@ex.ex", "password"),  # login by email
     ],
 )
