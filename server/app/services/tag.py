@@ -32,10 +32,12 @@ def create_new_tag(tag: TagCreate, user: User):
     return new_tag
 
 
-def not_existing_tags(tags: List[TagCreate], user: User):
-    tags_names = set([t.name for t in tags])
+def create_tags(tags: List[TagCreate], user: User):
     with get_session() as session:
         db_tags = set(session.query(Tag).filter(Tag.user_id == user.id).all())
         db_tags_names = set([t.name for t in db_tags])
-        not_existing_tags_set = tags_names.difference(db_tags_names)
-    return list(filter(lambda t: t.name in not_existing_tags_set, tags))
+    not_existing_tags = list(filter(lambda tag: not tag.name in db_tags_names, tags))
+    with get_session() as session:
+        for new_tag in not_existing_tags:
+            session.add(Tag(user_id=user.id, **new_tag.model_dump()))
+        session.commit()

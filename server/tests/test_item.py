@@ -16,8 +16,8 @@ from app.models.restriction_const import (
     [
         ("r" * ITEM_TEXT_MAX_LEN, None, 201),
         ("r" * ITEM_TEXT_MIN_LEN, None, 201),
-        ("r" * ITEM_TEXT_MAX_LEN, ["tag1"], 404),  # Tag doesn't exist
-        ("r" * ITEM_TEXT_MAX_LEN, ["tag1", "tag2"], 404),  # Tags don't exist
+        ("r" * ITEM_TEXT_MAX_LEN, ["tag1"], 201),  # Tag that doesn't exist
+        ("r" * ITEM_TEXT_MAX_LEN, ["tag1", "tag2"], 201),  # Tags that don't exist
         ("r" * 0, None, 400),  # Nothing
         ("r" * (ITEM_TEXT_MIN_LEN - 1), None, 400),  # Nothing
         ("r" * (ITEM_TEXT_MAX_LEN + 1), None, 422),  # Too long content
@@ -64,15 +64,37 @@ class UploadResp:
 
 
 @pytest.mark.parametrize(
-    "item_text,                tags, file_path,                    status_code",
+    "item_text, tags, file_path, upload_resp, item_status, status_code",
     [
-        ("Describtion for item 1", None, "./server/tests/tagfeed.png", 201),
+        (
+            "Describtion for item 1",
+            None,
+            "./server/tests/tagfeed.png",
+            "ok",
+            "CREATED",
+            201,
+        ),
+        (
+            "Describtion for item 1",
+            None,
+            "./server/tests/tagfeed.png",
+            "error",
+            "FAILED",
+            201,
+        ),
     ],
 )
 def test_create_item_to_the_storage(
-    test_user, authorized_client, mocker, item_text, tags, file_path, status_code
+    authorized_client,
+    mocker,
+    item_text,
+    tags,
+    file_path,
+    upload_resp,
+    item_status,
+    status_code,
 ):
-    mock_data = UploadResp("ok")
+    mock_data = UploadResp(upload_resp)
     mocker.patch("app.services.item.upload_item", return_value=mock_data)
 
     data = dict()
@@ -90,7 +112,7 @@ def test_create_item_to_the_storage(
         res = authorized_client.post("/items/", data=data)
     assert res.status_code == status_code
     new_item = ItemOut(**res.json())
-    assert new_item.status == ItemStatus("CREATED")
+    assert new_item.status == ItemStatus(item_status)
     assert new_item.item_text == item_text
 
 
@@ -114,13 +136,14 @@ def test_create_item_custom_tag(authorized_client, created_tag):
 
 
 def test_create_item_non_existing_custom_tag(authorized_client):
+    tag_name = "random_tag_name"
     res = authorized_client.post(
         "/items/",
-        data={"text": "Hey hey", "tags": ["random_tag_name"]},
+        data={"text": "Hey hey", "tags": [tag_name]},
     )
     assert (
-        res.status_code == 404
-    ), "Should be an 404 error because tag random_tag_name doesn't exists"
+        res.status_code == 201
+    ), f"Should be an 201 because tag {tag_name} should be created"
 
 
 def test_create_item_unauth(client):

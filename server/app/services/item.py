@@ -4,10 +4,8 @@ from typing import List
 from fastapi import File
 from sqlalchemy import desc
 
-from ..models.tag import Tag
 from ..models.item import Item, ItemStatus, ItemTypes
 from ..models.user import User
-from ..models.item_tag import ItemTag
 from ..schemas.tag import TagCreate
 from ..database import get_session
 from ..storage_handler_utils import upload_item, download_item
@@ -44,7 +42,6 @@ def get_an_item(user: User, id: int):
 
 # Create item
 def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: User):
-    tags = [TagCreate(name=user.username)] if not tags else tags
     item_type = (
         ItemTypes.TEXT if file is None else Item.filename_to_filetype(file.filename)
     )
@@ -61,12 +58,6 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
         session.add(new_item)
         session.flush()
         session.refresh(new_item)
-        db_tags = set(session.query(Tag).filter(Tag.user_id == user.id).all())
-        db_tags_dict = {tag.name: tag for tag in db_tags}
-        for tag in tags:
-            tag_object = db_tags_dict[tag.name]
-            item_tag = ItemTag(item_id=new_item.id, tag_id=tag_object.id)
-            session.add(item_tag)
         session.expunge(new_item)
         session.commit()
     if status != ItemStatus.SAVING:
@@ -82,7 +73,6 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
             queried_item = session.query(Item).filter_by(id=new_item.id).first()
             queried_item.status = ItemStatus.FAILED
             queried_item.content_uuid = None
-            session.query(ItemTag).filter(ItemTag.item_id == new_item.id).delete()
             session.flush()
             session.refresh(queried_item)
             session.expunge(queried_item)
