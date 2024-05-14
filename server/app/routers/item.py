@@ -8,7 +8,7 @@ from ..models.restriction_const import ITEM_TEXT_MAX_LEN
 from ..schemas.item import ItemOut, ItemStatus
 from ..schemas.tag import TagCreate
 from ..services.tag import create_tags
-from ..services.item_tag import create_item_items_tags
+from ..services.item_tag import create_item_tags_for_item
 from ..services.item import (
     get_items_list,
     get_an_item,
@@ -62,5 +62,5 @@ def create_item(
     new_item = create_new_item(file, text, tags, current_user)
     if new_item.status == ItemStatus.CREATED:
         create_tags(tags, current_user)
-        create_item_items_tags(new_item.id, tags, current_user)
+        create_item_tags_for_item(new_item.id, tags, current_user)
     return new_item

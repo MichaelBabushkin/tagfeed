@@ -7,7 +7,7 @@ from ..schemas.tag import TagCreate
 from ..database import get_session
 
 
-def create_item_items_tags(item_id: int, input_tags: List[TagCreate], user: User):
+def create_item_tags_for_item(item_id: int, input_tags: List[TagCreate], user: User):
     tags = [TagCreate(name=user.username)] if not input_tags else input_tags
     with get_session() as session:
         db_tags = set(session.query(Tag).filter(Tag.user_id == user.id).all())
