@@ -5,10 +5,17 @@ from app.config import settings
 from app.schemas.token import Token
 
 
-def test_login_user(test_user, client):
+@pytest.mark.parametrize(
+    "username, password",
+    [
+        ("username", "password"), # login by username
+        ("username@ex.ex", "password"),  # login by email
+    ],
+)
+def test_login_user(test_user, client, username, password):
     res = client.post(
         "/login",
-        data={"username": test_user["username"], "password": test_user["password"]},
+        data={"username": username, "password": password},
     )
     assert res.status_code == 200
     login_res = Token(**res.json())
@@ -16,8 +23,8 @@ def test_login_user(test_user, client):
     payload = jwt.decode(
         login_res.access_token, settings.secret_key, algorithms=[settings.algorithm]
     )
-    username = payload.get("username")
-    assert username == test_user["username"]
+    payload_username = payload.get("username")
+    assert payload_username == test_user["username"], "Couldn't login"
 
 
 @pytest.mark.parametrize(

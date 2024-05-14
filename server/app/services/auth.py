@@ -5,9 +5,13 @@ from ..database import get_session
 
 def login_user(user_credentials):
     with get_session() as session:
+        if '@' in user_credentials.username:
+            condition = User.email == user_credentials.username
+        else:
+            condition = User.username == user_credentials.username
         user = (
             session.query(User)
-            .filter(User.username == user_credentials.username)
+            .filter(condition)
             .first()
         )
     if not user:
