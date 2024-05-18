@@ -86,3 +86,11 @@ def create_new_item(file: File, item_text: str, tags: List[TagCreate], user: Use
         session.expunge(queried_item)
         session.commit()
     return queried_item
+
+
+def delete_item(item_id: int):
+    # This item isn't deleted from the storage (yet)
+    with get_session() as session:
+        entry_to_delete = session.query(Item).filter_by(id=item_id).first()
+        session.delete(entry_to_delete)
+        session.commit()
