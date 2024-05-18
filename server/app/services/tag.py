@@ -41,3 +41,10 @@ def create_tags(tags: List[TagCreate], user: User):
         for new_tag in not_existing_tags:
             session.add(Tag(user_id=user.id, **new_tag.model_dump()))
         session.commit()
+
+
+def delete_tags(tag_ids: List[int]):
+    tags_ids_set = set(tag_ids)
+    with get_session() as session:
+        session.query(Tag).filter(Tag.id.in_(tags_ids_set)).delete()
+        session.commit()

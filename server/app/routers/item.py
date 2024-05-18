@@ -7,13 +7,9 @@ from ..models.user import User
 from ..models.restriction_const import ITEM_TEXT_MAX_LEN
 from ..schemas.item import ItemOut, ItemStatus
 from ..schemas.tag import TagCreate
-from ..services.tag import create_tags
-from ..services.item_tag import create_item_tags_for_item
-from ..services.item import (
-    get_items_list,
-    get_an_item,
-    create_new_item,
-)
+from ..services.tag import create_tags, delete_tags
+from ..services.item_tag import create_item_tags_for_item, delete_item_tags_for_item
+from ..services.item import get_items_list, get_an_item, create_new_item, delete_item
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -64,3 +60,15 @@ def create_item(
         create_tags(tags, current_user)
         create_item_tags_for_item(new_item.id, tags, current_user)
     return new_item
+
+
+# Delete item
+@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+def create_item(
+    item_id: int,
+    current_user: User = Depends(oauth2.get_current_user),
+):
+    item = get_item(item_id, current_user)
+    tag_ids_to_delete = delete_item_tags_for_item(item.id)
+    delete_tags(tag_ids_to_delete)
+    delete_item(item.id)

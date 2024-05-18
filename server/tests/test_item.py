@@ -146,6 +146,30 @@ def test_create_item_non_existing_custom_tag(authorized_client):
     ), f"Should be an 201 because tag {tag_name} should be created"
 
 
+def test_delete_item(authorized_client, created_item):
+    res = authorized_client.delete(f"/items/{created_item.id}")
+    assert res.status_code == 204, "Item wasn't deleted"
+    res = authorized_client.get(f"/items/{created_item.id}")
+    assert res.status_code == 404, "Item is in the DB"
+
+
+def test_delete_item_twice(authorized_client, created_item):
+    res = authorized_client.delete(f"/items/{created_item.id}")
+    assert res.status_code == 204, "Item wasn't deleted"
+    res = authorized_client.delete(f"/items/{created_item.id}")
+    assert res.status_code == 404, "Item is in the DB"
+
+
+def test_delete_item_that_doesnt_exists(authorized_client):
+    res = authorized_client.delete(f"/items/1")
+    assert res.status_code == 404, "Item nobody created is in the DB"
+
+
+def test_delete_item_creates_by_someone_else(created_item, authorized_client2):
+    res = authorized_client2.delete(f"/items/{created_item.id}")
+    assert res.status_code == 404, "Deleted an item created by another user"
+
+
 def test_create_item_unauth(client):
     res = client.post(
         "/items/",
